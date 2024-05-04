@@ -11,11 +11,11 @@ from bs4 import BeautifulSoup
 class Download:
     def __init__(self,url):
         self.url = url
-        self.option = webdriver.ChromeOptions() 
+        self.option = webdriver.FirefoxOptions() 
         self.option.add_argument("--headless")
         self.option.add_argument("--no-sandbox")
         self.option.add_argument("--disable-dev-shm-usage")
-        self.driver = webdriver.Chrome(options=self.option)
+        self.driver = webdriver.Firefox(options=self.option)
         self.driver.delete_all_cookies()
         self.driver.implicitly_wait(13)
 
