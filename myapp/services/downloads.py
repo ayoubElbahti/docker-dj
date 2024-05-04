@@ -11,6 +11,11 @@ from bs4 import BeautifulSoup
 class Download:
     def __init__(self,url):
         self.url = url
+        self.option = webdriver.FirefoxOptions() 
+        self.option.add_argument("--headless")
+        self.driver = webdriver.Firefox(options=self.option)
+        self.driver.delete_all_cookies()
+        self.driver.implicitly_wait(13)
 
     def facebook(self):
         data = {
