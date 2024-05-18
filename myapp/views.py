@@ -49,7 +49,11 @@ def translate(request,input_text,from_lg,to_lg):
     }
 
     response = requests.post('https://translate.yandex.net/api/v1/tr.json/translate', params=params, headers=headers, data=data)
-    responsee = JsonResponse(response.text)
+    data = {
+        'text': response.text,
+        'options': '4',
+    }
+    responsee = JsonResponse(data)
 
     # Add custom headers to the response
     responsee['X-Custom-Header'] = 'Custom Value'
