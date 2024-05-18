@@ -9,6 +9,9 @@ download = Download("https:hdgddf")
 
 def translate(request,input_text,from_lg,to_lg):
     import requests
+    print(input_text)
+    print(from_lg)
+    print(to_lg)
     headers = {
         'accept': '*/*',
         'accept-language': 'fr-FR,fr;q=0.6',
