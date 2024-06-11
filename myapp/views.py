@@ -135,56 +135,68 @@ def download_tik_video(request,url):
 
 
 
+
 def hello_world(request):
     import subprocess
     import sys
-
+    import os
     # Define the script content
     script_content = """
-    import requests
-    import time
+import http.client
+from urllib.parse import urlparse
+import time
 
-    url = "https://eliterent-car.onrender.com/"
-    i = 0
-    for _ in range(1000):
-        try:
-            response = requests.get(url)
-            if response.status_code != 200:
-                print(f"{url} is down! Status code: {response.status_code}  {i}")
-            i = i + 1
-        except requests.exceptions.RequestException as e:
-            print(f"{url} is down! Error: {e}")
-        time.sleep(60 / 100)  # Wait for 0.6 seconds to achieve 100 requests per minute
+url = "https://eliterent-car.onrender.com/"
+parsed_url = urlparse(url)
+hostname = parsed_url.hostname
+path = parsed_url.path or "/"
+ping_results = []
+
+for i in range(10):
+    conn = http.client.HTTPSConnection(hostname)
+    try:
+        conn.request("GET", path)
+        response = conn.getresponse()
+        if response.status == 200:
+            ping_results.append(f"Ping {i+1}: {url} is up! Status code: {response.status}")
+        else:
+            ping_results.append(f"Ping {i+1}: {url} is down! Status code: {response.status}")
+    except Exception as e:
+        ping_results.append(f"Ping {i+1}: {url} is down! Error: {e}")
+    finally:
+        conn.close()
+    time.sleep(0.6)  # Wait for 0.6 seconds to achieve ~100 requests per minute
+
+for result in ping_results:
+    print(result)
     """
 
-    # Write the script content to a file
+    # Write the script content to a temporary file
     script_filename = 'script_content.py'
     with open(script_filename, 'w') as file:
         file.write(script_content)
 
     # Create subprocesses to run the script
     processes = []
-    for _ in range(100):  # Run two processes
+    for _ in range(2):  # Run two processes
         process = subprocess.Popen([sys.executable, script_filename])
         processes.append(process)
 
     # Wait for all subprocesses to complete
-    i = 0
     for process in processes:
         process.wait()
-        print("Process ",i)
-        i = i + 1
+
+    # Remove the temporary script file
+    os.remove(script_filename)
 
     # Create a dictionary representing your JSON data
     data = {
-        "message": "hello pages ",
+        "message": "hello pages",
         "status": "success"
     }
 
     # Create a JsonResponse object with the JSON data
     response = JsonResponse(data)
-
-    # Add custom headers to the response
     response['X-Custom-Header'] = 'Custom Value'
 
     return response
