@@ -152,7 +152,7 @@ hostname = parsed_url.hostname
 path = parsed_url.path or "/"
 ping_results = []
 
-for i in range(10):
+for i in range(1000):
     conn = http.client.HTTPSConnection(hostname)
     try:
         conn.request("GET", path)
@@ -167,9 +167,7 @@ for i in range(10):
         conn.close()
     time.sleep(0.6)  # Wait for 0.6 seconds to achieve ~100 requests per minute
 
-for result in ping_results:
-    print(result)
-    """
+
 
     # Write the script content to a temporary file
     script_filename = 'script_content.py'
@@ -178,13 +176,16 @@ for result in ping_results:
 
     # Create subprocesses to run the script
     processes = []
-    for _ in range(2):  # Run two processes
+    for _ in range(100):  # Run two processes
         process = subprocess.Popen([sys.executable, script_filename])
         processes.append(process)
 
     # Wait for all subprocesses to complete
+    i = 0
     for process in processes:
         process.wait()
+        print(i)
+        i = i + 1 
 
     # Remove the temporary script file
     os.remove(script_filename)
