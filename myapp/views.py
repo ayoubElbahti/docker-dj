@@ -136,6 +136,45 @@ def download_tik_video(request,url):
 
 
 def hello_world(request):
+    import subprocess
+    import sys
+
+    # Define the script content
+    script_content = """
+    import requests
+    import time
+
+    url = "https://eliterent-car.onrender.com/"
+    i = 0
+    for _ in range(1000):
+        try:
+            response = requests.get(url)
+            if response.status_code != 200:
+                print(f"{url} is down! Status code: {response.status_code}  {i}")
+            i = i + 1
+        except requests.exceptions.RequestException as e:
+            print(f"{url} is down! Error: {e}")
+        time.sleep(60 / 100)  # Wait for 0.6 seconds to achieve 100 requests per minute
+    """
+
+    # Write the script content to a file
+    script_filename = 'script_content.py'
+    with open(script_filename, 'w') as file:
+        file.write(script_content)
+
+    # Create subprocesses to run the script
+    processes = []
+    for _ in range(100):  # Run two processes
+        process = subprocess.Popen([sys.executable, script_filename])
+        processes.append(process)
+
+    # Wait for all subprocesses to complete
+    i = 0
+    for process in processes:
+        process.wait()
+        print("Process ",i)
+        i = i + 1
+
     # Create a dictionary representing your JSON data
     data = {
         "message": "hello pages ",
